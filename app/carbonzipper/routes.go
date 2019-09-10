@@ -2,6 +2,7 @@ package zipper
 
 import (
 	"expvar"
+	"github.com/gorilla/mux"
 	"net/http"
 	"net/http/pprof"
 
@@ -10,7 +11,7 @@ import (
 )
 
 func initHandlers(app *App) http.Handler {
-	r := http.NewServeMux()
+	r := mux.NewRouter()
 
 	r.HandleFunc("/metrics/find/", httputil.TrackConnections(httputil.TimeHandler(app.findHandler, app.bucketRequestTimes)))
 	r.HandleFunc("/render/", httputil.TrackConnections(httputil.TimeHandler(app.renderHandler, app.bucketRequestTimes)))
@@ -21,7 +22,7 @@ func initHandlers(app *App) http.Handler {
 }
 
 func initMetricHandlers(app *App) http.Handler {
-	r := http.NewServeMux()
+	r := mux.NewRouter()
 
 	r.Handle("/metrics", promhttp.Handler())
 
